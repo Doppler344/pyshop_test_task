@@ -1,16 +1,106 @@
-# This is a sample Python script.
+from pprint import pprint
+import random
+import math
+import time
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+DESIRED_SCORE = 25000
+
+TIMESTAMPS_COUNT = 50000  # 50000
+
+PROBABILITY_SCORE_CHANGED = 0.0001
+
+PROBABILITY_HOME_SCORE = 0.45
+
+OFFSET_MAX_STEP = 1  # 3
+
+INITIAL_STAMP = {
+    "offset": 0,
+    "score": {
+        "home": 0,
+        "away": 0
+    }
+}
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+def generate_stamp(previous_value):
+    score_changed = random.random() > 1 - PROBABILITY_SCORE_CHANGED
+    home_score_change = 1 if score_changed and random.random() > 1 - \
+                             PROBABILITY_HOME_SCORE else 0
+    away_score_change = 1 if score_changed and not home_score_change else 0
+    offset_change = math.floor(random.random() * OFFSET_MAX_STEP) + 1
+
+    return {
+        "offset": previous_value["offset"] + offset_change,
+        "score": {
+            "home": previous_value["score"]["home"] + home_score_change,
+            "away": previous_value["score"]["away"] + away_score_change
+        }
+    }
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+def generate_game():
+    stamps = [INITIAL_STAMP, ]
+    current_stamp = INITIAL_STAMP
+    for _ in range(TIMESTAMPS_COUNT):
+        current_stamp = generate_stamp(current_stamp)
+        stamps.append(current_stamp)
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    return stamps
+
+
+game_stamps = generate_game()
+
+pprint(game_stamps)
+
+
+# -----------------------------------TASK-----------------------------------
+
+def bench(func):
+    def wrapper(game_stamps, offset):
+        start = time.time()
+        func(game_stamps, offset)
+        end = time.time()
+        print('{}'.format(end - start))
+
+    return wrapper
+
+
+# @bench
+def get_score(game_stamps, offset):  # O(n)
+    '''
+        Takes list of game's stamps and time offset for which returns the scores for the home and away teams.
+        Please pay attention to that for some offsets the game_stamps list may not contain scores.
+    '''
+    for stamp in game_stamps:
+        if offset in stamp.values():
+            return stamp['score']['home'], stamp['score']['away']
+    raise ValueError('Value not included')
+
+
+score = get_score(game_stamps, DESIRED_SCORE)
+print(score)
+
+
+# @bench
+def get_score_performance(game_stamps, offset):  # O(log(n)) // can use it because the list was created sorted
+    '''
+        Takes list of game's stamps and time offset for which returns the scores for the home and away teams.
+        Please pay attention to that for some offsets the game_stamps list may not contain scores.
+    '''
+    low = 0
+    high = len(game_stamps) - 1
+    while low <= high:
+        mid = (low + high) // 2
+        guess = game_stamps[mid]['offset']
+        if guess == offset:
+            return game_stamps[mid]['score']['home'], game_stamps[mid]['score']['away']
+        elif guess > offset:
+            high = mid - 1
+        else:
+            low = mid + 1
+
+    raise ValueError('list doesnt contain score')
+
+
+score = get_score_performance(game_stamps, DESIRED_SCORE)
+print(score)
