@@ -3,9 +3,9 @@ import random
 import math
 import time
 
-DESIRED_SCORE = 25000
+DESIRED_OFFSET = 498
 
-TIMESTAMPS_COUNT = 50000  # 50000
+TIMESTAMPS_COUNT = 500  # 50000
 
 PROBABILITY_SCORE_CHANGED = 0.0001
 
@@ -67,26 +67,42 @@ def bench(func):
 
 # @bench
 def get_score(game_stamps, offset):  # O(n)
-    '''
+    """
         Takes list of game's stamps and time offset for which returns the scores for the home and away teams.
         Please pay attention to that for some offsets the game_stamps list may not contain scores.
-    '''
+    """
+
+    if type(offset) is not int:
+        raise TypeError(f'offset must be integer, not {type(offset)}')
+    if offset < 0:
+        raise ValueError(f'offset must be positive: 0 > {offset}')
+    if type(game_stamps) is not list:
+        raise TypeError(f'game_stamps must be list of dict, not {type(game_stamps)}')
+
     for stamp in game_stamps:
         if offset in stamp.values():
             return stamp['score']['home'], stamp['score']['away']
-    raise ValueError('Value not included')
+    raise ValueError('offset value not included')
 
 
-score = get_score(game_stamps, DESIRED_SCORE)
-print(score)
+# score = get_score(game_stamps, DESIRED_OFFSET)
+# print(score)
 
 
 # @bench
 def get_score_performance(game_stamps, offset):  # O(log(n)) // can use it because the list was created sorted
-    '''
+    """
         Takes list of game's stamps and time offset for which returns the scores for the home and away teams.
         Please pay attention to that for some offsets the game_stamps list may not contain scores.
-    '''
+    """
+
+    if type(offset) is not int:
+        raise TypeError(f'offset must be integer, not {type(offset)}')
+    if offset < 0:
+        raise ValueError(f'offset must be positive: 0 > {offset}')
+    if type(game_stamps) is not list:
+        raise TypeError(f'game_stamps must be list of dict, not {type(game_stamps)}')
+
     low = 0
     high = len(game_stamps) - 1
     while low <= high:
@@ -101,6 +117,5 @@ def get_score_performance(game_stamps, offset):  # O(log(n)) // can use it becau
 
     raise ValueError('list doesnt contain score')
 
-
-score = get_score_performance(game_stamps, DESIRED_SCORE)
-print(score)
+# score = get_score_performance(game_stamps, DESIRED_OFFSET)
+# print(score)
