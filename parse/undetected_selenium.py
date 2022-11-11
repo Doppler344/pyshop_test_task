@@ -6,11 +6,12 @@ import time
 import undetected_chromedriver
 
 if __name__ == '__main__':
-    options = undetected_chromedriver.ChromeOptions()
-    options.add_argument("--disable-blink-features=AutomationControlled")
 
     url = "https://www.ozon.ru/category/smartfony-15502/?sorting=rating"
     url = "https://www.ozon.ru/category/smartfony-15502/?page=2&sorting=rating"
+
+    options = undetected_chromedriver.ChromeOptions()
+    options.add_argument("--disable-blink-features=AutomationControlled")
     s = Service(executable_path="C:\\Users\\Doppl\\PycharmProjects\\pyshop_test\\parse\\chromedriver\\chromedriver.exe")
 
     driver = undetected_chromedriver.Chrome(service=s, options=options)
