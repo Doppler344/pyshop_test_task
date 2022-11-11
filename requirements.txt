@@ -1,3 +1,7 @@
 pip==21.1.2
 setuptools==57.0.0
 wheel==0.36.2
+
+Scrapy~=2.7.1
+itemadapter~=0.7.0
+selenium~=4.6.0
