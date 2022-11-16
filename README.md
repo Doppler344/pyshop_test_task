@@ -2,9 +2,9 @@
 ## https://jl.pyshop.ru/tasks/python-dev/
 
 
-1 Task - main.py
-2 Task - test_main.py 
-3 Task - parse folder
+-1 Task - main.py
+-2 Task - test_main.py 
+-3 Task - parse folder
 
 ## Task feedback
 
