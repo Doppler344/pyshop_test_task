@@ -8,7 +8,9 @@ import scrapy
 
 class OzonTop100Item(scrapy.Item):
     # define the fields for your item here like:
+    url = scrapy.Field
     title = scrapy.Field()
     atr = scrapy.Field()
     os = scrapy.Field()
+
     pass
